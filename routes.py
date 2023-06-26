@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app
 import datetime
 import uuid
+from bson.objectid import ObjectId
+from markupsafe import Markup
 
 pages = Blueprint("habits", __name__, template_folder="templates", static_folder="static")
-
 
 # function to get the date for 3 days before and 3 days after a given date
 # use a context processor so that all templates will have access to the date_range variable
@@ -50,9 +51,10 @@ def add_habit():
     today = today_at_midnight()
     if request.form:
         # if a post method is recieved get the habit and add it to habits
-        current_app.db.habits.insert_one(
-            {"_id": uuid.uuid4().hex, "added": today, "name": request.form.get("habit")}
-        )
+        current_app.db.habits.insert_one({
+            "added": today, 
+            "name": request.form.get("habit")
+            })
     return render_template(
         "add_habit.html", 
         title="Habit Tracker - Add Habit", 
@@ -73,7 +75,7 @@ def complete():
 
     return redirect(url_for(".index", date=date_string))
 
-@pages.route("/incomplete", methods=["POST"])
+@pages.route("/incomplete", methods=["GET", "POST"])
 def incomplete():
     # get the values for 'date' and 'habitName' from the form
     date_string = request.form.get("date")
@@ -81,5 +83,16 @@ def incomplete():
     date = datetime.datetime.fromisoformat(date_string)
     #in the completions dictionary at the date element remove the habit to the list
     current_app.db.completions.delete_one({"date": date, "habit": habit})
+
+    return redirect(url_for(".index", date=date_string))
+
+@pages.route("/remove_habit", methods=["POST"])
+def remove_habit():
+    date_string = request.form.get("date")
+    habit_id = request.form.get("habitId")
+    added = request.form.get("added")
+    date = datetime.datetime.fromisoformat(date_string)
+
+    current_app.db.habits.delete_one({"_id": habit_id, "added": added, "name": request.form.get("habit")})
 
     return redirect(url_for(".index", date=date_string))
