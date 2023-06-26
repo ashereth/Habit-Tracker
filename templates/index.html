@@ -3,17 +3,17 @@
 {% block main_content %}
     <section class="habit-list">
     {% for habit in habits %}
-        {% set completed = habit in completions %}
+        {% set completed = habit["_id"] in completions %}
         <!--if the habit is completed then display the habit with a completed icon-->
         {% if completed %}
             <div class="habit completed">
                 <form class="habit__form" method="POST" action="{{ url_for('habits.incomplete') }}">
                     <!--when clicked the form sets variable habitName = habit
                         and sets date = selected_date when calling the complete method-->
-                    <input type="hidden" name="habitName" value="{{ habit }}">
+                    <input type="hidden" name="habitId" value="{{ habit['_id'] }}">
                     <input type="hidden" name="date" value="{{ selected_date }}">
                     <button type="submit" class="habit__button">
-                        {{ habit }}
+                        {{ habit["name"] }}
                     </button>
                 </form>
                 <svg class="habit__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -27,10 +27,10 @@
                 <form class="habit__form" method="POST" action="{{ url_for('habits.complete') }}">
                     <!--when clicked the form sets variable habitName = habit
                         and sets date = selected_date when calling the complete method-->
-                    <input type="hidden" name="habitName" value="{{ habit }}">
+                    <input type="hidden" name="habitId" value="{{ habit['_id'] }}">
                     <input type="hidden" name="date" value="{{ selected_date }}">
                     <button type="submit" class="habit__button">
-                        {{ habit }}
+                        {{ habit['name'] }}
                     </button>
                 </form>
             </div>
