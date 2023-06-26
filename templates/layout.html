@@ -20,6 +20,27 @@
         </header>
 
         <main class="main">
+            <section class="dates">
+                <!--call our date_range function using 
+                    the selected date that was passed into the render template
+                    in order to get a list of dates and then display them-->
+                {% for date in date_range(selected_date) %}
+                    <!--dates are displayed with a link that when clicked on refreshes the page
+                        and changes the 'date' variable-->
+                    <!--the class of the date link is changed when the loop is at index 3
+                        so that we can modify that specific date to look different-->
+                    <a 
+                        class="dates__link {{ 'dates__link--current' if loop.index0 == 3 else ''}}" 
+                        href="{{ url_for('index', date=date)}}">
+                        <time class="date" datetime="{{ date }}">
+                            <!--display day of the week-->
+                            <span>{{ date.strftime("%a") }}</span>
+                            <!--display day of the month-->
+                            <span>{{ date.strftime("%d") }}</span>
+                        </time>
+                    </a>
+                {% endfor %}
+            </section>
             {% block main_content %}
             {% endblock %}
         </main>
