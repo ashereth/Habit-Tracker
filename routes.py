@@ -50,11 +50,9 @@ def index():
 def add_habit():
     today = today_at_midnight()
     if request.form:
-        # if a post method is recieved get the habit and add it to habits
-        current_app.db.habits.insert_one({
-            "added": today, 
-            "name": request.form.get("habit")
-            })
+        current_app.db.habits.insert_one(
+            {"_id": uuid.uuid4().hex, "added": today, "name": request.form.get("habit")}
+        )
     return render_template(
         "add_habit.html", 
         title="Habit Tracker - Add Habit", 
