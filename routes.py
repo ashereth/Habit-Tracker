@@ -85,14 +85,3 @@ def incomplete():
     current_app.db.completions.delete_one({"date": date, "habit": habit})
 
     return redirect(url_for(".index", date=date_string))
-
-@pages.route("/remove_habit", methods=["POST"])
-def remove_habit():
-    date_string = request.form.get("date")
-    habit_id = request.form.get("habitId")
-    added = request.form.get("added")
-    date = datetime.datetime.fromisoformat(date_string)
-
-    current_app.db.habits.delete_one({"_id": habit_id, "added": added, "name": request.form.get("habit")})
-
-    return redirect(url_for(".index", date=date_string))
