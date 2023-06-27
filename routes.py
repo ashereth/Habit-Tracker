@@ -70,7 +70,7 @@ def complete():
     date = datetime.datetime.fromisoformat(date_string)
     #in the completions dictionary at the date element add the habit to the list
     current_app.db.completions.insert_one({"date": date, "habit": habit})
-
+    # use redirect to call call the main page function to refresh the page with the updated changes
     return redirect(url_for(".index", date=date_string))
 
 @pages.route("/incomplete", methods=["GET", "POST"])
@@ -81,5 +81,5 @@ def incomplete():
     date = datetime.datetime.fromisoformat(date_string)
     #in the completions dictionary at the date element remove the habit to the list
     current_app.db.completions.delete_one({"date": date, "habit": habit})
-
+    # use redirect to call call the main page function to refresh the page with the updated changes
     return redirect(url_for(".index", date=date_string))
